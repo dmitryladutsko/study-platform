@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+{% load util %}
+{% load static %}
+
+
+{% block page_title %}Тест{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/select.css' %}">
+<link rel="stylesheet" href="{% static 'css/table.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="section-teachers">
+    <h1 class="h1 h1_center">Тест</h1>
+
+    <form action="." method="POST" class="form mt-40">
+        {% csrf_token %}
+        <div class="form__item">
+            <label class="form__label">ID</label>
+            <input class="form__input" value="{{  test.id }}" disabled>
+        </div>
+        <div class="form__item">
+            <label for="{{ form.name.id_for_label }}" class="form__label">{{ form.name.label }}</label>
+            {{ form.name }}
+        </div>
+        {% if user.profile.type == 1 %}
+        <div class="form__item">
+            <label for="{{ form.owner.id_for_label }}" class="form__label">{{ form.owner.label }}</label>
+            <div class="form__input select" role="close">
+                <div class="select__selected">{{ test.owner|default_if_none:"---" }}</div>
+                <div class="select__options">
+                    {% for teacher in teachers %}
+                    <div class="select__option" data-value="{{ teacher.pk }}">{{ teacher }}</div>
+                    {% endfor %}
+                </div>
+                <div class="select__icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="10" viewBox="0 0 18 10" fill="none">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M8.25532 9.5127L0.642136 1.89952C0.251612 1.50899 0.251612 0.875826 0.642136 0.485302C1.03266 0.0947777 1.66583 0.0947777 2.05635 0.485302L8.98336 7.41231L16.3121 0.466567C16.713 0.0866574 17.3459 0.10364 17.7258 0.504499C18.1057 0.905357 18.0887 1.53829 17.6879 1.9182L9.65486 9.53141C9.26318 9.90536 8.64248 9.89986 8.25753 9.51491L8.25532 9.5127Z" fill="#B8B8B8"/>
+                    </svg>
+                </div>
+                {{ form.owner }}
+            </div>
+        </div>
+        {% else %}
+        {{ form.owner.as_hidden }}
+        {% endif %}
+
+        <div class="form__item">
+            <button type="submit" class="btn">Сохранить</button>
+        </div>
+        <div class="form__item">
+            <a href="{% url 'test-delete' test.pk %}" class="btn btn_red confirm submit">Удалить</a>
+        </div>
+
+    </form>
+
+</section>
+
+<section class="section">
+    <h2 class="h2 mt-40">Вопросы</h2>
+    <div class="menu mt-40">
+        {% for question in test.questions.all %}
+        <a href="{% url 'test-question' test.pk question.pk %}" class="menu__item">
+            {{ question.text }}
+            {% if question.type == 1 %}
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M10.6464 0.353553C10.8417 0.158291 11.1583 0.158291 11.3536 0.353553L13.6464 2.64645C13.8417 2.84171 13.8417 3.15829 13.6465 3.35355L5.35367 11.6464C5.15841 11.8417 4.84184 11.8417 4.64657 11.6464L2.35357 9.35355C2.1583 9.15829 2.1583 8.8417 2.35356 8.64644L10.6464 0.353553Z" fill="#D9D9D9"/>
+                <path d="M0.83605 13.1639L2.20159 9.4087L4.5913 11.7984L0.83605 13.1639Z" fill="#31D499" stroke="#31D499"/>
+            </svg>
+            {% else %}
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="1" y="1" width="14" height="14" rx="3" stroke="#B8B8B8" stroke-width="2"/>
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M5.5072 12.8704C5.41016 12.8155 5.32103 12.7436 5.24457 12.6552C5.22514 12.6329 5.20687 12.6099 5.18975 12.5863L2.20006 8.6C1.86869 8.15817 1.95823 7.53137 2.40006 7.2C2.84189 6.86863 3.46869 6.95817 3.80006 7.4L6.10825 10.4776L12.293 4.29289C12.6835 3.90237 13.3166 3.90237 13.7072 4.29289C14.0977 4.68342 14.0977 5.31658 13.7072 5.70711L6.71934 12.6949C6.69905 12.7159 6.6777 12.7361 6.65529 12.7555C6.56714 12.8321 6.46877 12.8907 6.36499 12.9313C6.22459 12.9864 6.07562 13.0079 5.92935 12.9975C5.78299 12.9872 5.63847 12.9448 5.5072 12.8704Z" fill="#31D499"/>
+            </svg>
+            {% endif %}
+
+        </a>
+        {% endfor %}
+        <a href="{% url 'test-question-add' test.pk %}" class="btn">Добавить</a>
+    </div>
+</section>
+
+<section class="section">
+    <h2 class="h2 mt-40">Результаты</h2>
+    <div class="table-wrapper mt-40">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Балл</th>
+                    <th>Имя</th>
+                    <th>Фамилия</th>
+                    <th>Отчетсво</th>
+                    <th>Email</th>
+                    <th>Группа</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for try in test.users_tries.all %}
+                <tr>
+                    <td>{{ try.score|floatformat:0 }}/100</td>
+                    <td>{{ try.user.first_name|default:"-" }}</td>
+                    <td>{{ try.user.last_name|default:"-" }}</td>
+                    <td>{{ try.user.profile.middle_name|default:"-" }}</td>
+                    <td>
+                        <a href="{% if try.user.username %}{% url 'student' try.user.pk %}{% endif %}" class="table__foreign-key">{{ try.user.username }}</a>
+                    </td>
+                    <td>
+                        <a href="{% if try.user.group_set.first %}{% url 'group' try.user.group_set.first.pk %}{% endif %}" class="table__foreign-key">{{ try.user.group_set.first.id }}</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<script>
+    $("select").prop('hidden', true)
+    $("select#{{ form.owner.id_for_label }} option:first").remove()
+    $("select#{{ form.owner.id_for_label }} option[value='{{test.owner.pk}}']").prop('selected', true)
+
+
+    $(".select").on('click', function() {
+        if ($(this).attr("role") == "close") {
+            $(this).attr("role", "open")
+        } else {
+            $(this).attr("role", "close")
+        }
+    })
+
+    $(".select__option").on('click', function() {
+        $(this).parent().parent().children(".select__selected").html($(this).html())
+        $(this).parent().parent().children("select").children('option').prop("selected", false)
+        $(this).parent().parent().children("select").children(`option[value='${$(this).attr('data-value')}']`).prop("selected", true)
+    })
+
+    // Confirm
+    $(".confirm.confirm-ajax").on('click', function(event) {
+        var req = confirm("Вы уверены?");
+        if (req){
+            var url = $(this).attr("data-url");
+            $.get(url);
+        }
+        event.preventDefault();
+    })
+
+    $(".confirm").on('click', function(e) {
+        var req = confirm("Вы уверены?");
+        if (!req){
+            event.preventDefault();
+        }
+
+    })
+</script>
+{% endblock %}

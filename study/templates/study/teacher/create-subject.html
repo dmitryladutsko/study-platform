@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load util %}
+{% load static %}
+
+
+{% block page_title %}Создать предмет{% endblock %}
+
+{% block extra_css %}
+{% endblock %}
+
+{% block content %}
+<section class="section-teachers">
+    <h1 class="h1 h1_center">Предмет</h1>
+
+    <form action="." method="POST" class="form mt-40">
+        {% csrf_token %}
+        <div class="form__item">
+            <label for="{{ form.name.id_for_label }}" class="form__label">{{ form.name.label }}</label>
+            {{ form.name }}
+        </div>
+        {{ form.group.as_hidden }}
+        <div class="form__item">
+            <button type="submit" class="btn">Создать</button>
+        </div>
+
+    </form>
+
+</section>
+
+<script>
+
+</script>
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block page_title %}{{ test.name }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/checkbox.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="section">
+    <h1 class="h1 h1_center">{{ test.name }}</h1>
+
+    <form action="." method="POST" class="form mt-40">
+        {% csrf_token %}
+        {% for question in test.questions.all %}
+        <div class="form__item">
+            <label class="form__label">{{ question.text }}</label>
+            {% if question.type == 2 %}
+            <div class="checkbox" role="test">
+                {% for answer in question.answers.all %}
+                <div class="checkbox__item" data-value="{{ answer.pk }}">
+                    <div class="checkbox__text">{{ answer.text }}</div>
+                </div>
+                <input type="checkbox" name="{{ answer.pk }}" data-value="{{ answer.pk }}" hidden>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="form__item">
+                <input class="form__input" type="text" name="{{ question.answers.first.pk }}">
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+
+        <div class="form__item">
+            <button type="submit" class="btn">Завершить</button>
+        </div>
+    </form>
+</section>
+
+
+<script>
+    $(".checkbox[role='test'] .checkbox__item").on('click', function() {
+        $(this).toggleClass("checkbox__item_checked")
+        let input = $(this).parent().children(`input[data-value=${$(this).attr("data-value")}]`)
+        if (input.prop("checked")) {
+            input.prop("checked", false)
+        } else {
+            input.prop("checked", true)
+        }
+    })
+</script>
+{% endblock %}

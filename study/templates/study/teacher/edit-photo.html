@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% load util %}
+{% load static %}
+
+
+{% block page_title %}Изменить фото{% endblock %}
+
+{% block extra_css %}
+<style>
+    img {
+        display: block;
+        margin: 40px auto 0;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="section-teachers">
+    <h1 class="h1 h1_center">Фото</h1>
+
+    <img src="{{ photo.photo.url }}" height="200" alt="">
+
+    <form action="." method="POST" class="form mt-40" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form__item">
+            <label for="{{ form.name.id_for_label }}" class="form__label">{{ form.name.label }}</label>
+            {{ form.name }}
+        </div>
+        <div class="form__item">
+            <label for="{{ form.photo.id_for_label }}" class="form__label">{{ form.photo.label }}</label>
+            {{ form.photo }}
+        </div>
+        <div class="form__item">
+            <button type="submit" class="btn">Сохранить</button>
+        </div>
+        <div class="form__item">
+            <a href="{% url 'photo-delete' photo.pk %}" class="btn btn_red confirm submit">Удалить</a>
+        </div>
+
+    </form>
+
+</section>
+
+<script>
+    $(".confirm").on('click', function(e) {
+        var req = confirm("Вы уверены?");
+        if (req){
+            let url = $(this).attr("href")
+            $.get(url)
+            document.location.replace("{% url 'my-photos' %}")
+        }
+        event.preventDefault();
+
+    })
+</script>
+{% endblock %}

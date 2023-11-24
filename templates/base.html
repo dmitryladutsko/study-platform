@@ -1,0 +1,70 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>{% block page_title %}Страница{% endblock %}</title>
+
+	<!-- FONTS -->
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+	<!-- CSS -->
+	<link rel="stylesheet" href="{% static 'css/reset.css' %}">
+	<link rel="stylesheet" href="{% static 'css/main.css' %}">
+	<link rel="stylesheet" href="{% static 'css/menu.css' %}">
+    {% block extra_css %}{% endblock %}
+
+	<!-- JS -->
+	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    {% block extra_js %}{% endblock %}
+
+</head>
+<body>
+	<header class="header">
+		<div class="container">
+			<ul class="header-menu">
+				{% if user.is_authenticated %}
+				<li><a href="{% url 'index' %}">Главная</a></li>
+				{% if user.profile.type == 1 %}
+				<li><a href="{% url 'teachers' %}">Учителя</a></li>
+				<li><a href="{% url 'students' %}">Ученики</a></li>
+				<li><a href="{% url 'applications' %}">Заявки</a></li>
+				<li><a href="{% url 'groups' %}">Группы</a></li>
+				<li><a href="{% url 'subjects' %}">Предметы</a></li>
+				<li><a href="{% url 'lessons' %}">Уроки</a></li>
+				<li><a href="{% url 'tests' %}">Тесты</a></li>
+				{% elif user.profile.type == 2 %}
+				<li><a href="{% url 'my-group' %}">Моя группа</a></li>
+				<li><a href="{% url 'my-subjects' %}">Предметы</a></li>
+				<li><a href="{% url 'my-lessons' %}">Уроки</a></li>
+				<li><a href="{% url 'my-photos' %}">Фото</a></li>
+				<li><a href="{% url 'my-tests' %}">Тесты</a></li>
+				{% endif %}
+				<li class="header-menu-profile">
+					<a href="{% url 'profile' %}">{{ user.username }}</a> | <a href="{% url 'logout' %}">выйти</a>
+				</li>
+				{% endif%}
+			</ul>
+		</div>
+	</header>
+
+	<main class="main">
+		<div class="container">
+			{% if messages %}
+				<div class="messages" style="margin-bottom: 40px">
+				  {% for message in messages %}
+				  <div class="message {{ message.tags }}">
+					  {{ message|safe }}
+<!--					  <i class="fas fa-times cross"></i>-->
+				  </div>
+				  {% endfor %}
+				</div>
+				{% endif %}
+		    {% block content %}{% endblock %}
+		</div>
+	</main>
+</body>
+</html>

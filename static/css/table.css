@@ -1,0 +1,42 @@
+.table-wrapper {
+	width: 100%;
+	overflow-x: auto;
+}
+
+.table {
+	border-radius: 20px;
+	background: var(--tablePrimary);
+	border-collapse: collapse;
+}
+
+.table td,
+.table th {
+	padding: 15px 40px;
+	text-align: center;
+}
+
+.table th {
+	color: #000;
+	font-size: 20px;
+	font-weight: 700;
+}
+
+.table td {
+	color: #000;
+	font-size: 16px;
+	font-weight: 500;
+}
+
+
+.table tbody tr:nth-of-type(2n-1) {
+	background: var(--tableSecondary);
+}
+
+.table__object-url {
+	color: #000;
+	text-decoration: none;
+}
+
+.table__foreign-key {
+	color: #000;
+}

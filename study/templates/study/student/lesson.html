@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block page_title %}{{ lesson.name }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/checkbox.css' %}">
+<link rel="stylesheet" href="{% static 'css/magnific-popup.css' %}">
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/jquery.magnific-popup.min.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<section class="section">
+    <h1 class="h1">{{ lesson.name }}</h1>
+    <div class="gallery mt-40">
+        {% if lesson.video %}
+        <div class="lesson-video popup-video">
+            <video controls>
+                <source src="{{ lesson.video.url }}" type="video/mp4">
+            </video>
+        </div>
+        {% endif %}
+        <div class="lesson-images mt-20">
+            {% for photo in lesson.photos.all  %}
+            <a href="{{ photo.photo.url }}" class="lesson-image popup-image">
+                <img src="{{ photo.photo.url }}" alt="">
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="lesson-text mt-40">
+        {% if lesson.text %}
+        {{ lesson.text|linebreaks }}
+        {% endif %}
+    </div>
+
+    {% if lesson.test %}
+    <h2 class="h2 mt-40">Тест <span class="test-score">{{ lesson.get_test_best_try|floatformat:0 }}/100</span></h2>
+    <a href="{% url 'student-test' lesson.test.pk %}" class="btn mt-20">Пройти</a>
+    {% endif %}
+</section>
+
+<script>
+
+    $('.popup-image').magnificPopup({
+        type:'image',
+        gallery: {
+            enabled: true,
+            // tCounter: '<span class="mfp-counter">%curr% из %total%</span>'
+        }
+
+    });
+
+</script>
+{% endblock %}

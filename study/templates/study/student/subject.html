@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% load util %}
+
+{% block page_title %}{{ subject.name }}{% endblock %}
+
+{% block content %}
+<section class="section-admin">
+    <h1 class="h1">
+        {{ subject.name }}
+    </h1>
+    <div class="menu mt-40">
+        {% for lesson in lessons %}
+        <a href="{% url 'student-lesson' lesson.pk %}" class="menu__item">{{ lesson.name }}</a>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block page_title %}Мои фото{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/table.css' %}">
+{% endblock %}
+
+{% block content %}
+<section >
+    <h1 class="h1">Мои фото</h1>
+    <a href="{% url 'my-photo-create' %}" class="btn mt-40">Создать фото</a>
+    <div class="table-wrapper mt-40">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Название</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for object in objects %}
+                <tr>
+                    <td>
+                        <a href="{% url 'my-photo' object.pk %}" class="table__object-url">{{ object.name|default:"-" }}</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</section>
+
+{% endblock %}

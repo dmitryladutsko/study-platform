@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block page_title %}Войти{% endblock %}
+
+{% block content %}
+<section class="section-login">
+    <h1 class="h1 h1_center">Вход</h1>
+    <form action="." method="POST" class="form mt-40">
+        {% csrf_token %}
+        <div class="form__item">
+            <label for="{{form.username.id_for_label}}" class="form__label">{{ form.username.label }}</label>
+            {{ form.username }}
+        </div>
+        <div class="form__item">
+            <label for="{{form.password.id_for_label}}" class="form__label">{{ form.password.label }}</label>
+            {{ form.password }}
+        </div>
+        <div class="form__item">
+            <button type="submit" class="btn">Войти</button>
+        </div>
+        <div class="form__item form__control">
+            <a href="#">Забыли пароль?</a>
+            <a href="{% url 'application' %}">Подать заявку</a>
+        </div>
+    </form>
+</section>
+{% endblock %}

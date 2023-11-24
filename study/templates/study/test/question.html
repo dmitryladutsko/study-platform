@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% load util %}
+{% load static %}
+
+
+{% block page_title %}Вопрос{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/radio.css' %}">
+<link rel="stylesheet" href="{% static 'css/checkbox.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="section-teachers">
+    <h1 class="h1 h1_center">Вопрос</h1>
+
+    <form action="." method="POST" class="form mt-40">
+        {% csrf_token %}
+        <div class="form__item">
+            <label for="{{ form.text.id_for_label }}" class="form__label">{{ form.text.label }}</label>
+            {{ form.text }}
+        </div>
+        <div class="form__item">
+            <label class="form__label">{{ form.type.label }}</label>
+            <div class="radio">
+                <div class="radio__item radio__item_checked">{{ question.get_type_display }}</div>
+            </div>
+        </div>
+        {{ form.type.as_hidden }}
+        <div class="form__item">
+            <button type="submit" class="btn">Сохранить</button>
+        </div>
+        <div class="form__item">
+            <a href="{% url 'test-question-delete' question.test.pk question.pk %}" class="btn btn_red confirm submit">Удалить</a>
+        </div>
+    </form>
+
+
+    {% if question.type == 2 %}
+
+    <h3 class="h3 mt-40">Варианты ответа</h3>
+    <div class="checkbox mt-40" role="show">
+        {% for answer in question.answers.all %}
+        <div class="checkbox__item {% if answer.correct %}checkbox__item_checked{% endif %}">
+            <div class="checkbox__text">
+                {{ answer.text }}
+                <a class="checkbox__cross answer-delete" href="{% url 'answer-delete' answer.pk %}"><span></span><span></span></a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <form method="POST" action="{% url 'add-answer-variant' question.pk %}" class="form form_left mt-40">
+        {% csrf_token %}
+        <div class="form__item">
+            <label for="{{ answer_form.text.id_for_label }}" class="form__label">{{ answer_form.text.label }}</label>
+            {{ answer_form.text }}
+        </div>
+        <div class="form__item">
+            <div class="radio">
+                <div class="radio__item" data-value="True">Правильный</div>
+                <div class="radio__item radio__item_checked" data-value="False">Неправильный</div>
+                {{ answer_form.correct }}
+            </div>
+        </div>
+        <div class="form__item">
+            <button type="submit" class="btn">Добавить</button>
+        </div>
+    </form>
+
+    {% else %}
+
+    <h3 class="h3 mt-40">Правильный ответ</h3>
+     <form id="correct-answer-form" method="POST" action="{% url 'add-correct-text-answer' question.pk %}" class="form form_left mt-40">
+        {% csrf_token %}
+        <div class="form__item">
+            <label for="{{ answer_form.text.id_for_label }}" class="form__label">{{ answer_form.text.label }}</label>
+            {{ answer_form.text }}
+        </div>
+         {{ answer_form.correct.as_hidden }}
+        <div class="form__item">
+            <button type="submit" class="btn">Сохранить</button>
+        </div>
+    </form>
+    {% endif %}
+
+</section>
+
+<script>
+    $("input[type='checkbox']").prop('hidden', true)
+
+    $(".radio__item").on("click", function() {
+        if (!$(this).hasClass("radio__item_checked")) {
+            $(this).parent().children(".radio__item").removeClass("radio__item_checked")
+            $(this).addClass("radio__item_checked")
+            if ($(this).attr('data-value') == "True") {
+                $("input[type='checkbox']").prop("checked", true)
+            } else {
+                $("input[type='checkbox']").prop("checked", false)
+            }
+        }
+    })
+
+    $("#correct-answer-form input#{{ answer_form.text.id_for_label }}").val("{{ question.answers.first.text }}")
+
+    $(".answer-delete").on('click', function(event) {
+        var req = confirm("Вы уверены?");
+        if (req){
+            var url = $(this).attr("href");
+            let response = $.get(url);
+            $(this).parent().parent().remove()
+            console.log(response)
+        }
+        event.preventDefault();
+    })
+
+    // Confirm
+    $(".confirm").on('click', function(e) {
+        var req = confirm("Вы уверены?");
+        if (!req){
+            event.preventDefault();
+        }
+
+    })
+
+</script>
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% load util %}
+
+{% block page_title %}Главная{% endblock %}
+
+{% block content %}
+<section class="section-admin">
+    <h1 class="h1">
+        {% if user.profile.type == 3 %}
+        Предметы
+        {% else %}
+        Админ панель
+        {% endif %}
+    </h1>
+    <div class="menu mt-40">
+<!--        <div class="details">-->
+<!--            <div class="menu__item details__summary" role="close">Пользователи</div>-->
+<!--            <div class="details__items">-->
+<!--                <a href="#" class="menu__item details__item">Учителя</a>-->
+<!--                <a href="#" class="menu__item details__item">Ученики</a>-->
+<!--            </div>-->
+<!--        </div>-->
+        {% for item, value in menu.items %}
+
+        {% if value|is_dict %}
+        <div class="details">
+            <div class="menu__item details__summary" role="close">{{ item }}</div>
+            <div class="details__items">
+                {% for item_j, value_j in value.items %}
+                <a href="{{ value_j }}" class="menu__item details__item">{{ item_j }}</a>
+                {% endfor %}
+            </div>
+        </div>
+        {% else %}
+        <a href="{{ value }}" class="menu__item">{{ item }}</a>
+        {% endif %}
+        {% endfor %}
+    </div>
+</section>
+<script>
+    $(".details__summary").on('click', function() {
+        if ($(this).attr("role") == "close") {
+            $(this).attr("role", "open")
+        } else {
+            $(this).attr("role", "close")
+        }
+    })
+</script>
+{% endblock %}

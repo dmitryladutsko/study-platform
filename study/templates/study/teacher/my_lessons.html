@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block page_title %}Мои уроки{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/table.css' %}">
+{% endblock %}
+
+{% block content %}
+<section >
+    <h1 class="h1">Мои уроки</h1>
+    <a href="{% url 'my-lesson-create' %}" class="btn mt-40">Создать урок</a>
+    <div class="table-wrapper mt-40">
+        <table class="table">
+            <tbody>
+
+                {% for subject, lessons in objects.items %}
+                <tr>
+                    <th>{{ subject.name }}</th>
+                </tr>
+                {% for lesson in lessons %}
+                <tr>
+                    <td>
+                        <a href="{% url 'my-lesson' lesson.pk %}" class="table__object-url">{{ lesson.name|default:"-" }}</a>
+                    </td>
+                </tr>
+                {% endfor %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</section>
+
+{% endblock %}

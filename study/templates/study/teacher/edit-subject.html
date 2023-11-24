@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% load util %}
+{% load static %}
+
+
+{% block page_title %}Предмет{% endblock %}
+
+{% block extra_css %}
+{% endblock %}
+
+{% block content %}
+<section class="section-teachers">
+    <h1 class="h1 h1_center">Предмет</h1>
+
+    <form action="." method="POST" class="form mt-40">
+        {% csrf_token %}
+        <div class="form__item">
+            <label for="{{ form.name.id_for_label }}" class="form__label">{{ form.name.label }}</label>
+            {{ form.name }}
+        </div>
+        {{ form.group.as_hidden }}
+        <div class="form__item">
+            <button type="submit" class="btn">Сохранить</button>
+        </div>
+        <div class="form__item">
+            <a href="{% url 'subject-delete' subject.pk %}" class="btn btn_red confirm submit">Удалить</a>
+        </div>
+
+    </form>
+
+</section>
+
+<section class="section">
+    <h2 class="h2 mt-40">Уроки</h2>
+    <div class="menu mt-40">
+        {% for lesson in subject.lessons.all %}
+        <a href="" class="menu__item">
+            {{ lesson.name }}
+            {% if lesson.test %}
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="1" y="1" width="14" height="14" rx="3" stroke="#B8B8B8" stroke-width="2"/>
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M5.5072 12.8704C5.41016 12.8155 5.32103 12.7436 5.24457 12.6552C5.22514 12.6329 5.20687 12.6099 5.18975 12.5863L2.20006 8.6C1.86869 8.15817 1.95823 7.53137 2.40006 7.2C2.84189 6.86863 3.46869 6.95817 3.80006 7.4L6.10825 10.4776L12.293 4.29289C12.6835 3.90237 13.3166 3.90237 13.7072 4.29289C14.0977 4.68342 14.0977 5.31658 13.7072 5.70711L6.71934 12.6949C6.69905 12.7159 6.6777 12.7361 6.65529 12.7555C6.56714 12.8321 6.46877 12.8907 6.36499 12.9313C6.22459 12.9864 6.07562 13.0079 5.92935 12.9975C5.78299 12.9872 5.63847 12.9448 5.5072 12.8704Z" fill="#31D499"/>
+            </svg>
+            {% endif %}
+        </a>
+        {% endfor %}
+        <a href="" class="btn">Добавить</a>
+    </div>
+</section>
+
+
+<script>
+    $(".confirm").on('click', function(e) {
+        var req = confirm("Вы уверены?");
+        if (req){
+            let url = $(this).attr("href")
+            $.get(url)
+            document.location.href = "{% url 'my-subjects' %}"
+        }
+        event.preventDefault();
+
+    })
+</script>
+{% endblock %}

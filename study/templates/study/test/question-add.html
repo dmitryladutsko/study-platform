@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% load util %}
+{% load static %}
+
+
+{% block page_title %}Вопрос{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/radio.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="section-teachers">
+    <h1 class="h1 h1_center">Вопрос</h1>
+
+    <form action="." method="POST" class="form mt-40">
+        {% csrf_token %}
+        <div class="form__item">
+            <label for="{{ form.text.id_for_label }}" class="form__label">{{ form.text.label }}</label>
+            {{ form.text }}
+        </div>
+        <div class="form__item">
+            <label class="form__label">{{ form.type.label }}</label>
+            <div class="radio">
+<!--                <div class="radio__item radio__item_checked" data-value="text">Текст</div>-->
+<!--                <div class="radio__item" data-value="variants">Варианты ответа</div>-->
+                {% for value, type in types %}
+                <div class="radio__item {% if forloop.first%}radio__item_checked{% endif %}" data-value="{{ value }}">{{ type }}</div>
+                {% endfor %}
+                {% for input in form.type %}
+                {{ input }}
+                {% endfor %}
+            </div>
+        </div>
+        <div class="form__item">
+            <button type="submit" class="btn">Добавить</button>
+        </div>
+
+    </form>
+
+</section>
+
+<script>
+    $(".radio__item").on("click", function() {
+        if (!$(this).hasClass("radio__item_checked")) {
+            $(this).parent().children(".radio__item").removeClass("radio__item_checked")
+            $(this).addClass("radio__item_checked")
+            $("input[type='radio']").prop("checked", false)
+            $(`input[type='radio'][value=${$(this).attr('data-value')}]`).prop("checked", true)
+        }
+    })
+
+    $("input[type='radio']:first").parent().remove()
+    $("input[type='radio']:first").prop('checked', true)
+    $("input[type='radio']").parent().prop('hidden', true)
+
+</script>
+{% endblock %}

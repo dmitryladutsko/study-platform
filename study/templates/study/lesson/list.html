@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block page_title %}Уроки{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/table.css' %}">
+{% endblock %}
+
+{% block content %}
+<section >
+    <h1 class="h1">Уроки</h1>
+    <a href="{% url 'lesson-add' %}" class="btn mt-40">Добавить</a>
+    <div class="table-wrapper mt-40">
+        <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Название</th>
+                <th>Предмет</th>
+                <th>Тест</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for object in objects %}
+            <tr>
+                <td>
+                    <a href="{% url 'lesson' object.id %}" class="table__object-url">{{ object.id }}</a>
+                </td>
+                <td>{{ object.name|default:"-" }}</td>
+                <td>
+                    <a href="{% if object.subject %}{% url 'subject' object.subject.pk %}{% endif %}" class="table__foreign-key">{{ object.subject.id }}</a>
+                </td>
+                <td>
+                    <a href="{% if object.test %}#{% endif %}" class="table__foreign-key">{{ object.test.id }}</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    </div>
+
+</section>
+{% endblock %}

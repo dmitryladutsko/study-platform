@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block page_title %}Группы{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/table.css' %}">
+{% endblock %}
+
+{% block content %}
+<section >
+    <h1 class="h1">Группы</h1>
+    <a href="{% url 'group-add' %}" class="btn mt-40">Добавить</a>
+    <div class="table-wrapper mt-40">
+        <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Название</th>
+                <th>Владелец</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for object in objects %}
+            <tr>
+                <td>
+                    <a href="{% url 'group' object.pk %}" class="table__object-url">{{ object.id }}</a>
+                </td>
+                <td>{{ object.name|default:"-" }}</td>
+                <td>
+                    <a href="{% if object.owner %}{% url 'teacher' object.owner.pk %}{% endif %}" class="table__foreign-key">{{ object.owner.username }}</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    </div>
+
+</section>
+{% endblock %}

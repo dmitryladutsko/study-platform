@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block page_title %}Моя группа{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/table.css' %}">
+{% endblock %}
+
+{% block content %}
+<section >
+    <h1 class="h1">Моя группа</h1>
+    {% if user.study_groups.first %}
+    <div class="table-wrapper mt-40">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Имя</th>
+                    <th>Фамилия</th>
+                    <th>Отчество</th>
+                    <th>Email</th>
+                    <th>Действие</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for object in objects %}
+                <tr>
+                    <td>{{ object.first_name|default:"-" }}</td>
+                    <td>{{ object.last_name|default:"-" }}</td>
+                    <td>{{ object.profile.middle_name|default:"-" }}</td>
+                    <td>{{ object.email|default:"-" }}</td>
+                    <td>
+                        <a href="{% url 'my-group-exclude-student' object.pk %}" class="table__foreign-key confirm">Исключить</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <a href="{% url 'my-group-create' %}" class="btn mt-40">Создать группу</a>
+    {% endif %}
+
+</section>
+<script>
+    $(".confirm").on('click', function(e) {
+        var req = confirm("Вы уверены?");
+        if (!req){
+            event.preventDefault();
+        }
+
+    })
+</script>
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% load util %}
+{% load static %}
+
+
+{% block page_title %}Учителя{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/table.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="section-teachers">
+    <h1 class="h1">Учителя</h1>
+    <a href="{% url 'teacher-add' %}" class="btn mt-40">Добавить</a>
+    <div class="table-wrapper mt-40">
+        <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Имя</th>
+                <th>Фамилия</th>
+                <th>Отчество</th>
+                <th>Email</th>
+                <th>Группа</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in objects %}
+            <tr>
+                <td>
+                    <a href="{% url 'teacher' user.id %}" class="table__object-url">{{ user.id }}</a>
+                </td>
+                <td>{{ user.first_name|default:"-" }}</td>
+                <td>{{ user.last_name|default:"-" }}</td>
+                <td>{{ user.profile.middle_name|default_if_none:"-" }}</td>
+                <td>{{ user.email|default:"-" }}</td>
+                <td>
+                    <a href="#" class="table__foreign-key">{{ user.study_groups.first.id }}</a>
+                </td>
+            </tr>
+            {% endfor %}
+
+        </tbody>
+    </table>
+    </div>
+
+</section>
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load util %}
+{% load static %}
+
+
+{% block page_title %}Заявки{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/table.css' %}">
+{% endblock %}
+
+{% block content %}
+<section >
+    <h1 class="h1">Заявки</h1>
+    <div class="table-wrapper mt-40">
+        <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Имя</th>
+                <th>Фамилия</th>
+                <th>Отчество</th>
+                <th>Email</th>
+                <th>Группа</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for object in objects %}
+            <tr>
+                <td>
+                    <a href="{% url 'application' object.id %}" class="table__object-url">{{ object.id }}</a>
+                </td>
+                <td>{{ object.first_name|default:"-" }}</td>
+                <td>{{ object.last_name|default:"-" }}</td>
+                <td>{{ object.middle_name|default:"-" }}</td>
+                <td>{{ object.email|default:"-" }}</td>
+                <td>
+                    <a href="#" class="table__foreign-key">{{ object.group_id }}</a>
+                </td>
+            </tr>
+            {% endfor %}
+
+        </tbody>
+    </table>
+    </div>
+
+</section>
+{% endblock %}

@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% load util %}
+{% load static %}
+
+
+{% block page_title %}Заявка{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/select.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="section-teachers">
+    <h1 class="h1 h1_center">Заявка</h1>
+
+    <form action="{% url 'student-add' %}" method="POST" class="form mt-40">
+        {% csrf_token %}
+        <div class="form__item">
+            <label for="{{ user_form.last_name.id_for_label }}" class="form__label">{{ user_form.last_name.label }}</label>
+            {{ user_form.last_name }}
+        </div>
+        <div class="form__item">
+            <label for="{{ user_form.first_name.id_for_label }}" class="form__label">{{ user_form.first_name.label }}</label>
+            {{ user_form.first_name }}
+        </div>
+        <div class="form__item">
+            <label for="{{ profile_form.middle_name.id_for_label }}" class="form__label">{{ profile_form.middle_name.label }}</label>
+            {{ profile_form.middle_name }}
+        </div>
+        <div class="form__item">
+            <label for="{{ user_form.email.id_for_label }}" class="form__label">{{ user_form.email.label }}</label>
+            {{ user_form.email }}
+        </div>
+        <div class="form__item">
+            <label for="{{ profile_form.group.id_for_label }}" class="form__label">{{ profile_form.group.label }}</label>
+            <div class="form__input select" role="close">
+                <div class="select__selected">---</div>
+                <div class="select__options">
+                    <div class="select__option" data-value="">---</div>
+                    {% for group in groups %}
+                    <div class="select__option" data-value="{{ group.id }}">{{ group }}</div>
+                    {% endfor %}
+                </div>
+                <div class="select__icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="10" viewBox="0 0 18 10" fill="none">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M8.25532 9.5127L0.642136 1.89952C0.251612 1.50899 0.251612 0.875826 0.642136 0.485302C1.03266 0.0947777 1.66583 0.0947777 2.05635 0.485302L8.98336 7.41231L16.3121 0.466567C16.713 0.0866574 17.3459 0.10364 17.7258 0.504499C18.1057 0.905357 18.0887 1.53829 17.6879 1.9182L9.65486 9.53141C9.26318 9.90536 8.64248 9.89986 8.25753 9.51491L8.25532 9.5127Z" fill="#B8B8B8"/>
+                    </svg>
+                </div>
+                {{ profile_form.group }}
+            </div>
+        </div>
+        <div class="form__item">
+            <label for="{{ user_form.password.id_for_label }}" class="form__label">{{ user_form.password.label }}</label>
+            {{ user_form.password }}
+        </div>
+        <div class="form__item">
+            <button type="submit" class="btn">Подтвердить</button>
+        </div>
+        <div class="form__item">
+            <a href="{% url 'application-delete' application.pk %}" class="btn btn_red confirm submit">Отклонить</a>
+        </div>
+
+    </form>
+
+</section>
+
+<script>
+    $("select").prop('hidden', true)
+    $(".select__selected").html($("option:selected").html())
+
+    $(".btn[type='submit']").click(function() {
+        $.get("{% url 'application-delete' application.pk %}")
+    })
+
+    $(".select").on('click', function() {
+        if ($(this).attr("role") == "close") {
+            $(this).attr("role", "open")
+        } else {
+            $(this).attr("role", "close")
+        }
+    })
+
+    $(".select__option").on('click', function() {
+        $(this).parent().parent().children(".select__selected").html($(this).html())
+        $(this).parent().parent().children("select").children('option').prop("selected", false)
+        $(this).parent().parent().children("select").children(`option[value='${$(this).attr('data-value')}']`).prop("selected", true)
+    })
+
+    // Confirm
+    $(".confirm.confirm-ajax").on('click', function(event) {
+        var req = confirm("Вы уверены?");
+        if (req){
+            var url = $(this).attr("data-url");
+            $.get(url);
+        }
+        event.preventDefault();
+    })
+
+    $(".confirm").on('click', function(e) {
+        var req = confirm("Вы уверены?");
+        if (!req){
+            event.preventDefault();
+        }
+
+    })
+</script>
+{% endblock %}

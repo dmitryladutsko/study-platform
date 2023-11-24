@@ -1,0 +1,23 @@
+ul {
+    list-style: none;
+}
+
+.header-menu {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    width: 100%;
+}
+
+.header-menu a {
+    text-decoration: none;
+    font-weight: 700;
+    color: white;
+
+}
+
+.header-menu-profile {
+    margin-left: auto;
+}
+
+
